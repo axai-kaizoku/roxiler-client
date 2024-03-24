@@ -5,23 +5,27 @@ import Statistics from './components/Statistics';
 import PieChart from './components/PieChart';
 import DropDown from './components/Dropdown';
 import { months } from './constants/index';
+import Loading from './components/Loading';
 
 function App() {
 	const [data, setData] = useState([]);
 	const [page, setPage] = useState(1);
 	const [month, setMonth] = useState(3);
 	const [keyword, setKeyword] = useState('');
+	const [loading, setLoading] = useState(false);
 
 	const fetchTransactions = async (pageNo) => {
 		try {
-			// const response = await getTransactions();
+			setLoading(true);
 			const response = await fetch(
 				`https://roxiler-api-c3u0.onrender.com/api/v1/transaction/page/${pageNo}`,
 			);
 			const Transactiondata = await response.json();
 			setData(Transactiondata);
+			setLoading(false);
 		} catch (error) {
 			console.error('Error fetching data:', error);
+			setLoading(false);
 		}
 	};
 
@@ -50,18 +54,18 @@ function App() {
 
 	const searchResults = async (searchMonth = 3, searchKeyword) => {
 		try {
+			setLoading(true);
 			let url = `https://roxiler-api-c3u0.onrender.com/api/v1/transaction/search/${searchMonth}`;
-
-			// If searchKeyword is not empty, add it to the URL
 			if (searchKeyword && searchKeyword.trim() !== '') {
 				url += `/${searchKeyword.trim()}`;
 			}
-
 			const response = await fetch(url);
 			const searchData = await response.json();
 			setData(searchData);
+			setLoading(false);
 		} catch (error) {
 			console.log(error);
+			setLoading(false);
 		}
 	};
 
@@ -79,6 +83,7 @@ function App() {
 
 	return (
 		<main className="w-full min-h-screen bg-slate-50">
+			<Loading loading={loading} />
 			<div className="py-8 text-6xl text-center font-extralight">
 				Transaction Dashboard
 			</div>
