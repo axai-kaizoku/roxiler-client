@@ -23,7 +23,7 @@ export default function PieChart({ month }) {
 	const pieData = async (pieMonth) => {
 		try {
 			const response = await fetch(
-				`http://localhost:3030/api/v1/transaction/pie-chart/${pieMonth}`,
+				`https://roxiler-api-c3u0.onrender.com/api/v1/transaction/pie-chart/${pieMonth}`,
 			);
 			const monthData = await response.json();
 			setData(monthData);

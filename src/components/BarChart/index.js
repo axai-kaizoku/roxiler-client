@@ -50,7 +50,7 @@ export default function BarChart({ month }) {
 	const barData = async (barMonth) => {
 		try {
 			const response = await fetch(
-				`http://localhost:3030/api/v1/transaction/bar-chart/${barMonth}`,
+				`https://roxiler-api-c3u0.onrender.com/api/v1/transaction/bar-chart/${barMonth}`,
 			);
 			const monthData = await response.json();
 			setData(monthData);

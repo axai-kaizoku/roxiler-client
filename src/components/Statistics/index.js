@@ -11,7 +11,7 @@ export default function Statistics({ month }) {
 	const getStatistics = async (statsMonth) => {
 		try {
 			const response = await fetch(
-				`http://localhost:3030/api/v1/transaction/statistics/${statsMonth}`,
+				`https://roxiler-api-c3u0.onrender.com/api/v1/transaction/statistics/${statsMonth}`,
 			);
 			const data = await response.json();
 			setStatistics({

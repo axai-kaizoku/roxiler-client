@@ -16,7 +16,7 @@ function App() {
 		try {
 			// const response = await getTransactions();
 			const response = await fetch(
-				`http://localhost:3030/api/v1/transaction/page/${pageNo}`,
+				`https://roxiler-api-c3u0.onrender.com/api/v1/transaction/page/${pageNo}`,
 			);
 			const Transactiondata = await response.json();
 			setData(Transactiondata);
@@ -50,7 +50,7 @@ function App() {
 
 	const searchResults = async (searchMonth = 3, searchKeyword) => {
 		try {
-			let url = `http://localhost:3030/api/v1/transaction/search/${searchMonth}`;
+			let url = `https://roxiler-api-c3u0.onrender.com/api/v1/transaction/search/${searchMonth}`;
 
 			// If searchKeyword is not empty, add it to the URL
 			if (searchKeyword && searchKeyword.trim() !== '') {
