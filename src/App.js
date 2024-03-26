@@ -6,13 +6,16 @@ import PieChart from './components/PieChart';
 import DropDown from './components/Dropdown';
 import { months } from './constants/index';
 import Loading from './components/Loading';
+import Modal from './components/Modal';
 
-function App() {
+export default function App() {
 	const [data, setData] = useState([]);
 	const [page, setPage] = useState(1);
 	const [month, setMonth] = useState(3);
 	const [keyword, setKeyword] = useState('');
 	const [loading, setLoading] = useState(false);
+	const [isOpen, setIsOpen] = useState(false);
+	const [transId, setTransId] = useState(1);
 
 	const fetchTransactions = async (pageNo) => {
 		try {
@@ -55,7 +58,7 @@ function App() {
 	const searchResults = async (searchMonth = 3, searchKeyword) => {
 		try {
 			setLoading(true);
-			let url = `https://roxiler-api-c3u0.onrender.com/api/v1/transaction/search/${searchMonth}`;
+			let url = `http://localhost:3030/api/v1/transaction/search/${searchMonth}`;
 			if (searchKeyword && searchKeyword.trim() !== '') {
 				url += `/${searchKeyword.trim()}`;
 			}
@@ -89,7 +92,7 @@ function App() {
 			</div>
 			{/* Table start */}
 			<div className="flex justify-center my-16">
-				<div className="flex flex-col w-5/6">
+				<div className="flex flex-col w-11/12 sm:w-5/6">
 					<div className="flex justify-between w-full">
 						<input
 							type="text"
@@ -109,7 +112,7 @@ function App() {
 							/>
 						</div>
 					</div>
-					<table className="p-10 my-8 bg-white rounded-md">
+					<table className="p-10  my-8 bg-white rounded-md">
 						<thead>
 							<tr>
 								<th>ID</th>
@@ -121,21 +124,41 @@ function App() {
 								<th>Image</th>
 							</tr>
 						</thead>
-						<tbody>
+						<tbody className="text-sm">
 							{data.length > 0 ? (
 								data.map((row) => (
 									<tr key={row.id}>
 										<td>{row.id}</td>
 										<td>{row.title}</td>
-										<td>{row.description}</td>
+										<td>
+											{row.description.slice(
+												0,
+												row.description.lastIndexOf(' ', 80),
+											)}{' '}
+											<button
+												onClick={() => {
+													setTransId(row.id);
+													setIsOpen(true);
+												}}
+												className="border-b hover:text-blue-500 ">
+												{' '}
+												...more
+											</button>
+										</td>
 										<td>{row.price.toFixed(2)}</td>
-										<td>{row.category}</td>
-										<td>{row.sold ? 'true' : 'false'}</td>
+										<td className="capitalize">{row.category}</td>
+										<td>
+											<span>{row.sold ? 'Sold' : 'Available'}</span>
+										</td>
 										<td>
 											<img
 												src={row.image}
 												alt="item pic"
-												className="object-contain w-32 h-32"
+												className="object-contain w-24 h-24 cursor-pointer"
+												onClick={() => {
+													setTransId(row.id);
+													setIsOpen(true);
+												}}
 											/>
 										</td>
 									</tr>
@@ -149,14 +172,36 @@ function App() {
 							)}
 						</tbody>
 					</table>
-					<div className="flex justify-between w-full px-4">
-						<div>Page No: {page}</div>
-
-						<div>
-							<button onClick={prevPage}>Previous</button> -
-							<button onClick={nextPage}>Next</button>
+					<Modal
+						isOpen={isOpen}
+						closeModal={() => setIsOpen(false)}
+						id={transId}
+					/>
+					<div className="flex justify-end w-full gap-12 px-4">
+						<p className="p-3 font-semibold text-lg">
+							Rows per page: {data.length}
+						</p>
+						<p className="p-3 font-semibold text-lg">Page {page} of 6</p>
+						<div className="flex">
+							<button
+								onClick={prevPage}
+								className="p-3 mx-1 rounded-xl border">
+								<img
+									src="/chevron-left.svg"
+									alt="left"
+									className="max-sm:w-12 max-sm:h-12 w-5 h-5 object-contain"
+								/>
+							</button>{' '}
+							<button
+								onClick={nextPage}
+								className="p-3 mx-1 rounded-xl border">
+								<img
+									src="/chevron-right.svg"
+									alt="right"
+									className="max-sm:w-12 max-sm:h-12 w-5 h-5 object-contain"
+								/>
+							</button>
 						</div>
-						<div>Count: {data.length}</div>
 					</div>
 				</div>
 			</div>
@@ -172,7 +217,7 @@ function App() {
 
 			{/* Bar Chart Start */}
 			<div className="flex justify-center my-10">
-				<div className="w-4/5">
+				<div className="w-full sm:w-4/5">
 					<h2 className="p-4 text-4xl font-extralight">
 						Bar Chart Stats - {getMonthName(month)}
 					</h2>
@@ -185,11 +230,11 @@ function App() {
 
 			{/* Pie Chart start */}
 			<div className="flex justify-center my-20">
-				<div className="flex justify-center w-4/5">
-					<h2 className="p-4 text-4xl font-extralight">
+				<div className="flex justify-center  items-center w-full sm:w-4/5 flex-col">
+					<h2 className="p-4 text-4xl max-sm:w-full font-extralight">
 						Pie Chart Stats - {getMonthName(month)}
 					</h2>
-					<div className="flex justify-center w-2/4 p-10 ">
+					<div className="flex justify-center items-center w-full sm:w-2/4 p-10 ">
 						<PieChart month={month} />
 					</div>
 				</div>
@@ -198,5 +243,3 @@ function App() {
 		</main>
 	);
 }
-
-export default App;
