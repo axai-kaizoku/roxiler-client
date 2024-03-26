@@ -58,7 +58,7 @@ export default function App() {
 	const searchResults = async (searchMonth = 3, searchKeyword) => {
 		try {
 			setLoading(true);
-			let url = `http://localhost:3030/api/v1/transaction/search/${searchMonth}`;
+			let url = `https://roxiler-api-c3u0.onrender.com/api/v1/transaction/search/${searchMonth}`;
 			if (searchKeyword && searchKeyword.trim() !== '') {
 				url += `/${searchKeyword.trim()}`;
 			}
@@ -166,7 +166,7 @@ export default function App() {
 							) : (
 								<tr>
 									<td colSpan={7}>
-										<p className="p-10 text-3xl text-center">No Data</p>
+										<p className="p-10 text-4xl text-center">No Data</p>
 									</td>
 								</tr>
 							)}
